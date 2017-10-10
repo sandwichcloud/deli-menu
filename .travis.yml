@@ -1,0 +1,36 @@
+language: python
+python:
+- '3.6'
+env:
+#- TOXENV=py36
+- TOXENV=flake8
+- TOXENV=build
+install:
+- pip install tox
+script: tox
+services:
+- postgresql
+
+stages:
+    - test
+    - name: pypi
+      if: tag IS present
+    - name: docker
+      if: tag IS present
+
+jobs:
+  include:
+    - stage: pypi
+      script: 'echo "Deploying to PyPi"'
+      deploy:
+        provider: pypi
+        distributions: bdist_wheel
+        user: rmb938
+        password:
+          secure: p21xEfJQebjrt2Hsyx7k24xZWXjVw0VR9W5Mg940hLsU+B3vVJjgkjqUxPODI11ZdxSez6Q6DGUZ6GSV9xAkUYxy4JjHUQsg55xdnGjfVvrClQOBJ7RGF8vpOmgSzgwgiilw7mU6MUhyyXnAgwVNBazwwHXxWVG+HIGQylZ5O+6diJgzlPNy/Wb3hqif0yYYpOyHzfPrSLSByTwtgvaNBcoym87pazqcleGQgoEORZ6uG1IrjKviIyqfNPmddXXjPeKGCKNv4eMsGt6Bn4naAurhTOopjo3kA5NFgT9jn2yjDOk27oXhsKfhlI/1tP7IiLNwtOPfrTBDyIRWH/cKlVTv+j9LkpaZ1IhNGsTC11vEKlmBH+WxnhElUJJtJPx6ru5Zf4ipZArAajiOBXrs0jEuq5DuJcIF5n+1R/IBvagDnQ7tlMQ9BaINHAzU6LIJz5fUsa1ttWdRG1oNsvbKNMxiHpeUCTsVcLQ2ckFFwMIe+dsp1A91og9FJ2CsY0LL7pw4IicC3Imzzz6UIeCrWOLu+4EB4alSXmJV4nKuSf8fXkWIMn5I+3EPQhiNgEyTJCm2McOAYSaG+w+sMTRqSBAwSWtKzFnEB8aW8IUAVxvpZk54oAoLc15Yu3vdA43XP+ss7WbDxPxBZ3/MP8Ixl7jw28rjPLMGmBl/0Kx0i28=
+        on:
+          tags: true
+    - stage: docker
+      env:
+        - secure: "nDSZVNegrk+K/OYYH4W6y0+PLy3eNlca6Qb+brV/lB3t9+R0So8jAtAFLe5735YsK/IEcEn4bHtmAq8JOYXq5QjyspbtiQBGiA5vXqjKKdRAiDRpI91udgccQzRyuHVQ5gZLxXeDqpFL2xD1mV8I9BkKAQVLSFaj0TvxscNwaL46TnnxUz+UPVV2fLKEj0FiSEvrWyGNxLVMSoohVWTJyag0UhduEz/aZBKH24LEb7dnG/+onK6TNiSj+b9JHihXiLKB6KhrlqsNfWVb7LjvR0aeBWXUUnD5y00PJ5WhqKMet8uZBcQo8Jtl5jGDnEU/O6VaJjGhepDZq/x0q6T5sucDVwVxVrp56m4uqWAA9YKDz1VEnjDMrIjeGrjLrbPvRvqo8RoFsQGs3+M7GHKmAAfSHhkcSFKFvZ9a8NZe2NU6xIwvM7G0atwVdbCTxbLUldh8iGYDiUdCx7ZnsaTiLIpeHrCfayDz8sqsg4+vLb3Pv03QmN6ayr1uD+LHH+LladkYBAfR0iCHd2hasIndDgH3rN3z6uRuXIGFu3CPxGbC3Ofg5+PpSfmp2NQUfCE5izIJH0EqAlhCzGUop2RUAs6bsQJRj1WpeVOUbVoIx50ouKJS0UFIzYHGmL/hK4Um1Ek6hCisvEu3D4EspZbPqxeRnwKG6A/6QdG6MgMeMAg="
+      script: ./trigger_docker_build.sh
