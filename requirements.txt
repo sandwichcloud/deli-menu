@@ -1,5 +1,5 @@
 pbr==3.1.1 # Apache 2.0
 python-dotenv==0.7.1 # BSD 3-clause
 pyyaml==3.12 # MIT
-ingredients.http==0.0.11 # MIT
+ingredients.http==0.0.12 # MIT
 ingredients.db==0.0.9 # MIT
