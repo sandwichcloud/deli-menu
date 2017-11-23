@@ -66,3 +66,13 @@ if os.environ.get('CLI'):
 DATABASE_HOST = os.environ['DATABASE_HOST']
 DATABASE_USERNAME = os.environ['DATABASE_USERNAME']
 DATABASE_PASSWORD = os.environ['DATABASE_PASSWORD']
+
+####################
+# HTTP             #
+####################
+
+# Set to True so the metadata service knows that it is behind a load balancer
+# This is used so clients can't spoof addresses
+# We ignore X-Forwarded-For unless we are behind a LB
+# Your LB should be set to override any X-Forwarded-For headers from clients
+HTTP_LOADBALANCER = os.environ.get('HTTP_LOADBALANCER', False)

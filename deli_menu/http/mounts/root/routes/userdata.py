@@ -15,11 +15,7 @@ class UserDataRouter(Router):
         with cherrypy.request.db_session() as session:
             instance = session.query(Instance).filter(Instance.id == cherrypy.request.instance_id).first()
 
-            data = instance.tags.get('user-data', {
-                # 'ssh_authorized_keys': [
-                # ]
-            })
-
+            data = instance.tags.get('user-data', {})
             output = yaml.safe_dump(data=data, default_flow_style=False)
             output = "#cloud-config\n" + output
             return output
