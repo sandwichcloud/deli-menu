@@ -19,21 +19,14 @@ class MetaDataRouter(Router):
             region = session.query(Region).filter(Region.id == instance.region_id).first()
             zone = session.query(Zone).filter(Zone.id == instance.zone_id).first()
 
-            public_keys = []
-            for public_key in instance.public_keys:
-                public_keys.append(public_key.key)
+            keypairs = []
+            for keypair in instance.keypairs:
+                keypairs.append(keypair.public_key)
 
             # Strip out user-data
             tags = instance.tags if instance.tags is not None else {}
-            del tags['user-data']
-
-        # TODO: include some sort of instance identity document similar to aws PKCS7
-        # http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-identity-documents.html
-
-        # TODO: include some sort of service account (IAM) for the instance.
-        # This will allow the instance to call the api. We probably need better acls first.
-
-        # Those probably should be moved to a /security-creds route ^
+            if 'user-data' in tags:
+                del tags['user-data']
 
         metadata = {
             'ami-id': instance.image_id,
@@ -41,7 +34,7 @@ class MetaDataRouter(Router):
             'region': region.name,
             'availability-zone': zone.name,
             'tags': tags,
-            'public-keys': public_keys
+            'public-keys': keypairs
         }
 
         return metadata
