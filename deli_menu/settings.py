@@ -68,6 +68,12 @@ DATABASE_USERNAME = os.environ['DATABASE_USERNAME']
 DATABASE_PASSWORD = os.environ['DATABASE_PASSWORD']
 
 ####################
+# Auth             #
+####################
+
+AUTH_FERNET_KEYS = os.environ['AUTH_FERNET_KEYS'].split(",")
+
+####################
 # HTTP             #
 ####################
 
