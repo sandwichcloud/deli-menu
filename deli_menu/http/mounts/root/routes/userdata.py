@@ -1,5 +1,4 @@
 import cherrypy
-import yaml
 
 from ingredients_db.models.instance import Instance
 from ingredients_http.route import Route
@@ -15,7 +14,8 @@ class UserDataRouter(Router):
         with cherrypy.request.db_session() as session:
             instance = session.query(Instance).filter(Instance.id == cherrypy.request.instance_id).first()
 
-            data = instance.tags.get('user-data', {})
-            output = yaml.safe_dump(data=data, default_flow_style=False)
-            output = "#cloud-config\n" + output
-            return output
+            default_data = '#cloud-config\n{}'
+            if instance.tags is None:
+                return default_data
+
+            return instance.tags.get('user-data', default_data)
